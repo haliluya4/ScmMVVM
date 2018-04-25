@@ -4,9 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.databinding.Observable;
 import android.databinding.ObservableBoolean;
-import android.databinding.ObservableField;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -14,7 +12,6 @@ import android.text.TextUtils;
 import com.xjx.scm.R;
 import com.xjx.scm.repository.LoginRepository;
 import com.xjx.scm.ui.SingleLiveEvent;
-import com.xjx.scm.vo.LoginResult;
 import com.xjx.scm.vo.Resource;
 
 import timber.log.Timber;
@@ -24,9 +21,6 @@ import timber.log.Timber;
  */
 
 public class LoginViewModel extends AndroidViewModel {
-    public final ObservableField<String> userName = new ObservableField<>();
-
-    public final ObservableField<String> password = new ObservableField<>();
 
     public final ObservableBoolean logining = new ObservableBoolean(false);
 
@@ -56,9 +50,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     private LoginHandler mLoginHandler;
 
-    public void login() {
-        String userName = this.userName.get();
-        String password = this.password.get();
+    public void login(String userName, String password) {
         if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
             mShowTipsEvent.setValue(R.string.error_username_required);
             return;

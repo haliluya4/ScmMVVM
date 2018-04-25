@@ -1,51 +1,23 @@
 package com.xjx.scm.ui.login;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.xjx.scm.R;
 import com.xjx.scm.databinding.LoginActBinding;
 import com.xjx.scm.ui.ViewModelFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import timber.log.Timber;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * 登录界面
@@ -83,16 +55,30 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginActBinding binding = DataBindingUtil.setContentView(this, R.layout.login_act);
         binding.setViewmodel(mViewModel);
+        binding.login.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissKeyboard(view.getWindowToken());
+                String userName = binding.userName.getText().toString();
+                String password = binding.password.getText().toString();
+                mViewModel.login(userName, password);
+            }
+        });
 
     }
 
-    public static LoginViewModel obtainViewModel(AppCompatActivity activity) {
+    private void dismissKeyboard(IBinder windowToken) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(windowToken, 0);
+        }
+    }
+
+    private static LoginViewModel obtainViewModel(AppCompatActivity activity) {
         ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
 
-        LoginViewModel viewModel =
-                ViewModelProviders.of(activity, factory).get(LoginViewModel.class);
-
-        return viewModel;
+        return ViewModelProviders.of(activity, factory).get(LoginViewModel.class);
     }
 
 }
